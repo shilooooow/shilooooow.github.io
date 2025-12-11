@@ -1,308 +1,834 @@
-<!doctype html>
-<html lang="zh-Hant">
+<!DOCTYPE html>
+<html lang="zh-TW">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>學期/學年成績計算機</title>
-  <style>
-    :root{--card-bg:#fff;--bg:#f4f6fb;--accent:#3b82f6}
-    html,body{height:100%;margin:0;font-family:system-ui,-apple-system,'Segoe UI',Roboto,'Noto Sans CJK TC',"Helvetica Neue",Arial}
-    body{background:linear-gradient(180deg,#eef2ff 0%,var(--bg) 100%);padding:24px}
-    .wrap{max-width:920px;margin:0 auto}
-    header{display:flex;gap:12px;align-items:center;margin-bottom:18px}
-    header h1{margin:0;font-size:20px}
-    .card{background:var(--card-bg);border-radius:12px;padding:18px;box-shadow:0 6px 18px rgba(20,20,60,.06);margin-bottom:12px}
-    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
-    label{display:block;font-size:13px;margin-bottom:6px}
-    input[type=number],select{width:100%;padding:8px 10px;border-radius:8px;border:1px solid #e6e9f2;font-size:14px}
-    .row{display:flex;gap:8px}
-    button{background:var(--accent);color:#fff;border:0;padding:10px 14px;border-radius:10px;font-weight:600;cursor:pointer}
-    .muted{color:#6b7280;font-size:13px}
-    .result{font-size:18px;font-weight:700}
-    .small{font-size:13px}
-    .img-preview{max-width:240px;height:auto;border-radius:8px;border:1px dashed #d1d5db;padding:6px;background:#fff}
-    .footer{font-size:13px;color:#374151;margin-top:12px}
-    @media(max-width:520px){header{flex-direction:column;align-items:flex-start}}
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>學期與學年成績計算器</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', 'Microsoft JhengHei', sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: linear-gradient(135deg, #4b6cb7 0%, #182848 100%);
+            color: white;
+            border-radius: 12px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 25px;
+            justify-content: center;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            flex: 1;
+            min-width: 300px;
+            transition: transform 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .card-title {
+            font-size: 1.5rem;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #4b6cb7;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .card-title i {
+            color: #4b6cb7;
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+        }
+        
+        .input-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+        
+        label {
+            font-weight: 600;
+            color: #34495e;
+            flex: 1;
+            min-width: 120px;
+        }
+        
+        input {
+            flex: 2;
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border 0.3s;
+            min-width: 150px;
+        }
+        
+        input:focus {
+            border-color: #4b6cb7;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(75, 108, 183, 0.2);
+        }
+        
+        .buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+            flex-wrap: wrap;
+        }
+        
+        button {
+            padding: 14px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            flex: 1;
+            min-width: 150px;
+        }
+        
+        .calculate-btn {
+            background-color: #4b6cb7;
+            color: white;
+        }
+        
+        .calculate-btn:hover {
+            background-color: #3a5795;
+            transform: translateY(-3px);
+        }
+        
+        .reset-btn {
+            background-color: #e74c3c;
+            color: white;
+        }
+        
+        .reset-btn:hover {
+            background-color: #c0392b;
+            transform: translateY(-3px);
+        }
+        
+        .result-box {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+            border-left: 5px solid #4b6cb7;
+        }
+        
+        .result-title {
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+        
+        .result-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #4b6cb7;
+            margin: 10px 0;
+        }
+        
+        .result-note {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+            margin-top: 10px;
+        }
+        
+        .prediction-image {
+            width: 100%;
+            height: 200px;
+            background-color: #f0f2f5;
+            border-radius: 8px;
+            margin: 20px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            border: 2px dashed #bdc3c7;
+        }
+        
+        .prediction-image img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+        
+        .image-placeholder {
+            text-align: center;
+            color: #7f8c8d;
+            padding: 20px;
+        }
+        
+        .image-placeholder i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            color: #bdc3c7;
+        }
+        
+        .prediction-info {
+            background-color: #fff9e6;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+            border-left: 5px solid #f1c40f;
+        }
+        
+        .warning {
+            color: #e74c3c;
+            font-weight: 600;
+        }
+        
+        .success {
+            color: #27ae60;
+            font-weight: 600;
+        }
+        
+        .info {
+            color: #3498db;
+            font-weight: 600;
+        }
+        
+        .hint {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+            font-style: italic;
+            margin-top: 5px;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+            
+            .card {
+                width: 100%;
+            }
+            
+            .input-row {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            label {
+                margin-bottom: 5px;
+            }
+            
+            input {
+                width: 100%;
+            }
+            
+            .buttons {
+                flex-direction: column;
+            }
+            
+            button {
+                width: 100%;
+            }
+        }
+    </style>
 </head>
 <body>
-  <div class="wrap">
-    <header>
-      <h1>學期 / 學年 成績小工具（可直接放到 GitHub Pages）</h1>
-      <div class="muted">輸入分數（0-100），按計算。</div>
-    </header>
-
-    <section class="card">
-      <div class="grid">
-        <div>
-          <label>段考 1 分數</label>
-          <input id="exam1" type="number" min="0" max="100" placeholder="留空可視為還沒考（以計算需要分數）" />
+    <div class="header">
+        <h1><i class="fas fa-calculator"></i> 學期與學年成績計算器</h1>
+        <p>計算學期總成績、學年總成績，並預測下次段考所需分數，幫助您規劃學習目標</p>
+    </div>
+    
+    <div class="container">
+        <!-- 第一學期成績計算卡 -->
+        <div class="card">
+            <h2 class="card-title"><i class="fas fa-school"></i> 第一學期成績</h2>
+            
+            <div class="input-group">
+                <div class="input-row">
+                    <label for="exam1_1">第一次段考分數：</label>
+                    <input type="number" id="exam1_1" min="0" max="100" placeholder="0-100">
+                </div>
+                
+                <div class="input-row">
+                    <label for="exam1_2">第二次段考分數：</label>
+                    <input type="number" id="exam1_2" min="0" max="100" placeholder="0-100">
+                </div>
+                
+                <div class="input-row">
+                    <label for="exam1_3">第三次段考分數：</label>
+                    <input type="number" id="exam1_3" min="0" max="100" placeholder="0-100">
+                </div>
+                
+                <div class="input-row">
+                    <label for="usual1_1">第一次平時成績：</label>
+                    <input type="number" id="usual1_1" min="0" max="100" placeholder="0-100">
+                </div>
+                
+                <div class="input-row">
+                    <label for="usual1_2">第二次平時成績：</label>
+                    <input type="number" id="usual1_2" min="0" max="100" placeholder="0-100">
+                </div>
+                
+                <div class="input-row">
+                    <label for="usual1_3">第三次平時成績：</label>
+                    <input type="number" id="usual1_3" min="0" max="100" placeholder="0-100">
+                </div>
+            </div>
+            
+            <div class="buttons">
+                <button class="calculate-btn" id="calcSemester1">
+                    <i class="fas fa-calculator"></i> 計算第一學期成績
+                </button>
+                <button class="reset-btn" id="resetSemester1">
+                    <i class="fas fa-redo"></i> 重設
+                </button>
+            </div>
+            
+            <div class="result-box" id="resultSemester1">
+                <div class="result-title">第一學期總成績</div>
+                <div class="result-value">--</div>
+                <div class="result-note">計算公式：(三次段考平均 × 72%) + (三次平時平均 × 28%)</div>
+            </div>
         </div>
-        <div>
-          <label>段考 2 分數</label>
-          <input id="exam2" type="number" min="0" max="100" placeholder="留空可視為還沒考（以計算需要分數）" />
+        
+        <!-- 第二學期成績計算卡 -->
+        <div class="card">
+            <h2 class="card-title"><i class="fas fa-school"></i> 第二學期成績</h2>
+            
+            <div class="input-group">
+                <div class="input-row">
+                    <label for="exam2_1">第一次段考分數：</label>
+                    <input type="number" id="exam2_1" min="0" max="100" placeholder="0-100">
+                </div>
+                
+                <div class="input-row">
+                    <label for="exam2_2">第二次段考分數：</label>
+                    <input type="number" id="exam2_2" min="0" max="100" placeholder="0-100">
+                </div>
+                
+                <div class="input-row">
+                    <label for="exam2_3">第三次段考分數：</label>
+                    <input type="number" id="exam2_3" min="0" max="100" placeholder="0-100">
+                </div>
+                
+                <div class="input-row">
+                    <label for="usual2_1">第一次平時成績：</label>
+                    <input type="number" id="usual2_1" min="0" max="100" placeholder="0-100">
+                </div>
+                
+                <div class="input-row">
+                    <label for="usual2_2">第二次平時成績：</label>
+                    <input type="number" id="usual2_2" min="0" max="100" placeholder="0-100">
+                </div>
+                
+                <div class="input-row">
+                    <label for="usual2_3">第三次平時成績：</label>
+                    <input type="number" id="usual2_3" min="0" max="100" placeholder="0-100">
+                </div>
+            </div>
+            
+            <div class="buttons">
+                <button class="calculate-btn" id="calcSemester2">
+                    <i class="fas fa-calculator"></i> 計算第二學期成績
+                </button>
+                <button class="reset-btn" id="resetSemester2">
+                    <i class="fas fa-redo"></i> 重設
+                </button>
+            </div>
+            
+            <div class="result-box" id="resultSemester2">
+                <div class="result-title">第二學期總成績</div>
+                <div class="result-value">--</div>
+                <div class="result-note">計算公式：(三次段考平均 × 72%) + (三次平時平均 × 28%)</div>
+            </div>
         </div>
-        <div>
-          <label>段考 3 分數</label>
-          <input id="exam3" type="number" min="0" max="100" placeholder="留空可視為還沒考（以計算需要分數）" />
+        
+        <!-- 學年成績與預測卡 -->
+        <div class="card">
+            <h2 class="card-title"><i class="fas fa-chart-line"></i> 學年成績與下次考試預測</h2>
+            
+            <div class="input-group">
+                <div class="input-row">
+                    <label for="targetGrade">學期目標分數：</label>
+                    <input type="number" id="targetGrade" min="0" max="100" value="60" placeholder="例如：60">
+                </div>
+                
+                <div class="hint">輸入您希望達到的最低學期分數（通常為60分）</div>
+                
+                <div class="input-row">
+                    <label for="examsTaken">已考段考次數：</label>
+                    <select id="examsTaken" style="flex: 2; padding: 12px 15px; border-radius: 8px; border: 2px solid #ddd;">
+                        <option value="1">1次</option>
+                        <option value="2" selected>2次</option>
+                        <option value="3">3次</option>
+                    </select>
+                </div>
+                
+                <div class="input-row">
+                    <label for="usualsTaken">已有平時成績次數：</label>
+                    <select id="usualsTaken" style="flex: 2; padding: 12px 15px; border-radius: 8px; border: 2px solid #ddd;">
+                        <option value="1">1次</option>
+                        <option value="2" selected>2次</option>
+                        <option value="3">3次</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="buttons">
+                <button class="calculate-btn" id="calcPrediction">
+                    <i class="fas fa-search"></i> 計算下次所需分數
+                </button>
+                <button class="reset-btn" id="resetAll">
+                    <i class="fas fa-broom"></i> 全部重設
+                </button>
+            </div>
+            
+            <div class="result-box" id="resultPrediction">
+                <div class="result-title">下次段考所需分數</div>
+                <div class="result-value">--</div>
+                <div class="result-note">根據目前成績與目標分數計算</div>
+            </div>
+            
+            <!-- 預測圖片顯示區域 -->
+            <div class="prediction-image" id="predictionImage">
+                <div class="image-placeholder">
+                    <i class="fas fa-image"></i>
+                    <div>根據下次所需分數顯示對應圖片</div>
+                </div>
+            </div>
+            
+            <div class="prediction-info" id="predictionInfo">
+                <p>此處將根據您下次段考所需分數顯示提示訊息。</p>
+                <p>圖片區域預留給您根據不同分數範圍自訂圖片顯示：</p>
+                <ul style="margin-top: 10px; padding-left: 20px;">
+                    <li>10-50分：您可放置鼓勵學習的圖片</li>
+                    <li>50-60分：您可放置進步空間的圖片</li>
+                    <li>60-70分：您可放置達標的圖片</li>
+                    <li>70-80分：您可放置良好的圖片</li>
+                    <li>80-90分：您可放置優秀的圖片</li>
+                    <li>90-100分：您可放置卓越的圖片</li>
+                    <li>100分以上：您可放置挑戰極限的圖片</li>
+                </ul>
+            </div>
+            
+            <div class="result-box" id="resultYear">
+                <div class="result-title">學年總成績</div>
+                <div class="result-value">--</div>
+                <div class="result-note">計算公式：第一學期成績 × 50% + 第二學期成績 × 50%</div>
+            </div>
         </div>
-      </div>
-      <hr style="margin:12px 0;border:none;border-top:1px dashed #e6e9f2">
-      <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
-        <label style="min-width:160px">平時成績模式</label>
-        <select id="dailyMode">
-          <option value="3">3 次平時（平均）</option>
-          <option value="1">1 次平時（單一分數）</option>
-        </select>
-        <div style="flex:1"></div>
-        <label class="small muted">段考 : 平時 = 72 : 28（硬性設定，可在程式中修改）</label>
-      </div>
-
-      <div id="dailyInputs" class="grid" style="margin-top:12px">
-        <div><label>平時 1</label><input id="daily1" type="number" min="0" max="100"></div>
-        <div><label>平時 2</label><input id="daily2" type="number" min="0" max="100"></div>
-        <div><label>平時 3</label><input id="daily3" type="number" min="0" max="100"></div>
-      </div>
-
-      <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap">
-        <button id="calcSemester">計算本學期總成績</button>
-        <button id="calcYear">計算學年總成績（需輸入兩學期總成績）</button>
-        <div style="flex:1"></div>
-        <label class="small">通過分數（預設）</label>
-        <input id="passThreshold" type="number" value="60" min="0" max="100" style="width:80px">
-      </div>
-
-      <div style="margin-top:12px" id="semesterResultArea"></div>
-    </section>
-
-    <section class="card">
-      <h3 style="margin-top:0">預測：下次段考需考多少才不被當（解方程式）</h3>
-      <div class="grid">
-        <div>
-          <label>選擇下一次段考（假設該次為未知 x）</label>
-          <select id="nextExamChoice">
-            <option value="1">段考 1</option>
-            <option value="2">段考 2</option>
-            <option value="3">段考 3</option>
-          </select>
-        </div>
-        <div>
-          <label>目標學期總成績（通常為通過分數）</label>
-          <input id="targetSemester" type="number" value="60" min="0" max="100">
-        </div>
-        <div>
-          <label>（選用）目前另一學期總成績以計算學年成績</label>
-          <input id="otherSemester" type="number" min="0" max="100" placeholder="輸入學期1或學期2的另一個總成績，可空白">
-        </div>
-      </div>
-      <div style="margin-top:12px;display:flex;gap:8px;align-items:center">
-        <button id="calcNeeded">計算需要分數 x</button>
-        <div style="flex:1"></div>
-        <div class="muted small">結果會顯示需要的分數，超過 100 也會正常顯示並切換到你上傳的 100-plus 圖片。</div>
-      </div>
-
-      <div id="neededResult" style="margin-top:12px"></div>
-
-      <hr style="margin:12px 0;border:none;border-top:1px dashed #e6e9f2">
-      <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
-        <div>
-          <label>提示影像（依分數區間變換）</label>
-          <div>
-            <img id="rangeImage" src="" alt="提示圖" class="img-preview">
-          </div>
-        </div>
-        <div style="flex:1">
-          <label>提示文字（可自行修改）</label>
-          <div id="rangeText" class="card" style="padding:12px">尚未計算</div>
-        </div>
-      </div>
-
-      <div class="footer">範例：當需要分數落在 10-50、50-60、60-70、70-80、80-90、90-100、>100 等區間時，程式會切換上方圖片及文字。你可以到 images/ 資料夾放入對應檔名：<br>
-        <code>10-50.png,50-60.png,60-70.png,70-80.png,80-90.png,90-100.png,100-plus.png</code>
-      </div>
-    </section>
-
-    <section class="card">
-      <h3 style="margin-top:0">其他說明 & 部署到 GitHub Pages</h3>
-      <ol>
-        <li>把這個檔案命名為 <code>index.html</code>，放到新的 GitHub repository 的 root。</li>
-        <li>建立一個 <code>images/</code> 資料夾，上傳你的提示圖片，檔名請參考上方。</li>
-        <li>到 GitHub repository 的 Settings → Pages，選擇主分支 (main) 根目錄作為 Pages，儲存即可公開。</li>
-      </ol>
-      <div class="muted small">（如果你需要，我可以幫你把程式碼調整為單一檔案或分離 css/js 檔）</div>
-    </section>
-  </div>
-
-  <script>
-    // 權重常數（如需改動可在此調整）
-    const EXAM_WEIGHT = 0.72;
-    const DAILY_WEIGHT = 0.28;
-
-    function getNumber(id){
-      const el = document.getElementById(id);
-      if(!el) return null; // 防止找不到 id 時造成錯誤
-      const v = el.value.trim();
-      if(v === "") return null;
-      const n = Number(v);
-      return Number.isFinite(n) ? n : null;
-    }
-
-    function avg(arr){
-      const vals = arr.filter(v => v !== null && !Number.isNaN(v));
-      if(vals.length === 0) return 0;
-      return vals.reduce((a,b)=>a+b,0)/vals.length;
-    }
-
-    function formatNum(n){
-      return (Math.round(n*100)/100).toFixed(2);
-    }
-
-    // 預設的內嵌佔位 svg（若 images/ 裡沒有檔案會 fallback 到這些）
-    const PLACEHOLDERS = {
-      '10-50': genSVGDataUrl('10-50'),
-      '50-60': genSVGDataUrl('50-60'),
-      '60-70': genSVGDataUrl('60-70'),
-      '70-80': genSVGDataUrl('70-80'),
-      '80-90': genSVGDataUrl('80-90'),
-      '90-100': genSVGDataUrl('90-100'),
-      '100-plus': genSVGDataUrl('100+')
-    };
-
-    function genSVGDataUrl(text){
-      const svg = `<svg xmlns='http://www.w3.org/2000/svg' width='480' height='240'><rect width='100%' height='100%' fill='%23eef2ff'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' font-size='28' fill='%233b82f6' font-family='Arial'>${text}</text></svg>`;
-      return 'data:image/svg+xml;utf8,'+encodeURIComponent(svg);
-    }
-
-    // 更新平時輸入欄位（1 or 3）
-    document.getElementById('dailyMode').addEventListener('change', ()=>{
-      const mode = document.getElementById('dailyMode').value;
-      const container = document.getElementById('dailyInputs');
-      if(mode === '1'){
-        container.innerHTML = '<div><label>平時（單一分數）</label><input id="daily1" type="number" min="0" max="100"></div>';
-      } else {
-        container.innerHTML = '<div><label>平時 1</label><input id="daily1" type="number" min="0" max="100"></div>
-        <div><label>平時 2</label><input id="daily2" type="number" min="0" max="100"></div>
-        <div><label>平時 3</label><input id="daily3" type="number" min="0" max="100"></div>';
-      }
-    });
-
-    document.getElementById('calcSemester').addEventListener('click', ()=>{
-      const e1 = getNumber('exam1');
-      const e2 = getNumber('exam2');
-      const e3 = getNumber('exam3');
-      const dailyMode = document.getElementById('dailyMode').value;
-      const d1 = getNumber('daily1');
-      const d2 = dailyMode==='3'?getNumber('daily2'):null;
-      const d3 = dailyMode==='3'?getNumber('daily3'):null;
-      const pass = Number(document.getElementById('passThreshold').value) || 60;
-
-      const examVals = [e1,e2,e3];
-      const averageExams = avg(examVals.filter(v=>v!==null));
-      const averageDaily = (dailyMode==='1')? (d1||0) : avg([d1,d2,d3]);
-
-      const semesterScore = EXAM_WEIGHT * (averageExams||0) + DAILY_WEIGHT * (averageDaily||0);
-
-      const area = document.getElementById('semesterResultArea');
-      area.innerHTML = `<div class="result">本學期總成績：${formatNum(semesterScore)} / 100</div>
-        <div class="muted small">（段考平均：${formatNum(averageExams)}，平時平均：${formatNum(averageDaily)}）</div>
-        <div style="margin-top:8px">通過門檻：${pass}。${semesterScore>=pass?'<strong style="color:green">已達標</strong>':'<strong style="color:#d65555">尚未達標</strong>'}</div>`;
-    });
-
-    document.getElementById('calcYear').addEventListener('click', ()=>{
-      alert('要計算學年總成績，請先分別計算兩學期的總成績（或在右側輸入另一學期總成績），然後取平均。');
-    });
-
-    document.getElementById('calcNeeded').addEventListener('click', ()=>{
-      const choice = Number(document.getElementById('nextExamChoice').value);
-      const e1 = getNumber('exam1');
-      const e2 = getNumber('exam2');
-      const e3 = getNumber('exam3');
-
-      const examVals = [e1,e2,e3];
-      const knownVals = examVals.filter((v,i)=> i+1!==choice && v!==null);
-      const knownSum = knownVals.reduce((a,b)=>a+b,0);
-      const knownCount = knownVals.length;
-
-      const dailyMode = document.getElementById('dailyMode').value;
-      const d1 = getNumber('daily1');
-      const d2 = dailyMode==='3'?getNumber('daily2'):null;
-      const d3 = dailyMode==='3'?getNumber('daily3'):null;
-      const averageDaily = (dailyMode==='1')? (d1||0) : avg([d1,d2,d3]);
-
-      const target = Number(document.getElementById('targetSemester').value) || Number(document.getElementById('passThreshold').value) || 60;
-
-      // 解 x： 0.72 * ((knownSum + x) / (knownCount + 1)) + 0.28 * avgDaily >= target
-      const rhs = (target - DAILY_WEIGHT * averageDaily) / EXAM_WEIGHT;
-      let xNeeded = rhs * (knownCount + 1) - knownSum;
-      xNeeded = Math.round(xNeeded*100)/100;
-
-      const out = document.getElementById('neededResult');
-      let note = '';
-      if(knownCount < 1){
-        note = '<div class="muted small">提醒：你至少要填 1 個已知段考分數，程式才能計算出下一次要考多少。</div>';
-      }
-
-      if(xNeeded <= 0){
-        out.innerHTML = `<div class="result" style="color:green">不需要再高分：${xNeeded}（已達到目標，建議保持現狀）</div>${note}`;
-      } else {
-        out.innerHTML = `<div class="result">下次段考需要：${xNeeded} / 100</div>${note}`;
-      }
-
-      // 根據區間換圖與換字
-      updateRangeVisual(xNeeded);
-
-      // 若使用者有輸入另一個學期的分數，顯示學年預估
-      const otherSem = getNumber('otherSemester');
-      if(otherSem !== null){
-        const thisSemApprox = EXAM_WEIGHT * ((knownSum + Math.max(0,Math.min(100,xNeeded))) / (knownCount + 1)) + DAILY_WEIGHT * averageDaily;
-        const yearAvg = (thisSemApprox + otherSem) / 2;
-        out.innerHTML += `<div style="margin-top:8px" class="small">若以此推估，學年平均約：${formatNum(yearAvg)}</div>`;
-      }
-    });
-
-    function updateRangeVisual(x){
-      const img = document.getElementById('rangeImage');
-      const text = document.getElementById('rangeText');
-      if(x === null || isNaN(x)){
-        text.textContent = '尚未計算';
-        img.src = PLACEHOLDERS['10-50'];
-        return;
-      }
-      const val = x;
-      // 嘗試先使用 images/ 的檔案，若載入失敗會 fallback 到內建 SVG
-      function trySet(srcKey, filename){
-        const path = 'images/' + filename;
-        img.onerror = ()=>{ img.onerror = null; img.src = PLACEHOLDERS[srcKey]; };
-        img.src = path;
-      }
-
-      if(val < 50){
-        trySet('10-50','10-50.png');
-        text.innerHTML = '<strong>區間：10-50</strong><br>提示文字（請自行修改）';
-      } else if(val < 60){
-        trySet('50-60','50-60.png');
-        text.innerHTML = '<strong>區間：50-60</strong><br>提示文字（請自行修改）';
-      } else if(val < 70){
-        trySet('60-70','60-70.png');
-        text.innerHTML = '<strong>區間：60-70</strong><br>提示文字（請自行修改）';
-      } else if(val < 80){
-        trySet('70-80','70-80.png');
-        text.innerHTML = '<strong>區間：70-80</strong><br>提示文字（請自行修改）';
-      } else if(val < 90){
-        trySet('80-90','80-90.png');
-        text.innerHTML = '<strong>區間：80-90</strong><br>提示文字（請自行修改）';
-      } else if(val <= 100){
-        trySet('90-100','90-100.png');
-        text.innerHTML = '<strong>區間：90-100</strong><br>提示文字（請自行修改）';
-      } else {
-        trySet('100-plus','100-plus.png');
-        text.innerHTML = '<strong>區間：100 以上</strong><br>提示文字（請自行修改）';
-      }
-    }
-
-    // 初始化
-    document.getElementById('rangeImage').src = PLACEHOLDERS['10-50'];
-    updateRangeVisual(null);
-  </script>
+    </div>
+    
+    <div class="footer">
+        <p>© 2023 學期與學年成績計算器 | 本工具僅供參考，實際成績計算請以學校規定為準</p>
+        <p>設計用於GitHub部署 | 使用HTML、CSS和JavaScript實現</p>
+    </div>
+    
+    <script>
+        // DOM元素
+        const calcSemester1Btn = document.getElementById('calcSemester1');
+        const calcSemester2Btn = document.getElementById('calcSemester2');
+        const calcPredictionBtn = document.getElementById('calcPrediction');
+        const resetSemester1Btn = document.getElementById('resetSemester1');
+        const resetSemester2Btn = document.getElementById('resetSemester2');
+        const resetAllBtn = document.getElementById('resetAll');
+        
+        const resultSemester1 = document.getElementById('resultSemester1');
+        const resultSemester2 = document.getElementById('resultSemester2');
+        const resultPrediction = document.getElementById('resultPrediction');
+        const resultYear = document.getElementById('resultYear');
+        const predictionImage = document.getElementById('predictionImage');
+        const predictionInfo = document.getElementById('predictionInfo');
+        
+        // 第一學期成績計算
+        calcSemester1Btn.addEventListener('click', () => {
+            const exam1 = parseFloat(document.getElementById('exam1_1').value) || 0;
+            const exam2 = parseFloat(document.getElementById('exam1_2').value) || 0;
+            const exam3 = parseFloat(document.getElementById('exam1_3').value) || 0;
+            
+            const usual1 = parseFloat(document.getElementById('usual1_1').value) || 0;
+            const usual2 = parseFloat(document.getElementById('usual1_2').value) || 0;
+            const usual3 = parseFloat(document.getElementById('usual1_3').value) || 0;
+            
+            // 計算段考平均和平時平均
+            const examAvg = (exam1 + exam2 + exam3) / 3;
+            const usualAvg = (usual1 + usual2 + usual3) / 3;
+            
+            // 計算學期總成績 (段考72% + 平時28%)
+            const semesterScore = (examAvg * 0.72) + (usualAvg * 0.28);
+            
+            // 顯示結果
+            const resultValue = resultSemester1.querySelector('.result-value');
+            resultValue.textContent = semesterScore.toFixed(2);
+            
+            // 根據成績添加顏色標記
+            if (semesterScore >= 90) {
+                resultValue.className = 'result-value success';
+            } else if (semesterScore >= 60) {
+                resultValue.className = 'result-value info';
+            } else {
+                resultValue.className = 'result-value warning';
+            }
+            
+            // 計算學年成績
+            calculateYearGrade();
+        });
+        
+        // 第二學期成績計算
+        calcSemester2Btn.addEventListener('click', () => {
+            const exam1 = parseFloat(document.getElementById('exam2_1').value) || 0;
+            const exam2 = parseFloat(document.getElementById('exam2_2').value) || 0;
+            const exam3 = parseFloat(document.getElementById('exam2_3').value) || 0;
+            
+            const usual1 = parseFloat(document.getElementById('usual2_1').value) || 0;
+            const usual2 = parseFloat(document.getElementById('usual2_2').value) || 0;
+            const usual3 = parseFloat(document.getElementById('usual2_3').value) || 0;
+            
+            // 計算段考平均和平時平均
+            const examAvg = (exam1 + exam2 + exam3) / 3;
+            const usualAvg = (usual1 + usual2 + usual3) / 3;
+            
+            // 計算學期總成績 (段考72% + 平時28%)
+            const semesterScore = (examAvg * 0.72) + (usualAvg * 0.28);
+            
+            // 顯示結果
+            const resultValue = resultSemester2.querySelector('.result-value');
+            resultValue.textContent = semesterScore.toFixed(2);
+            
+            // 根據成績添加顏色標記
+            if (semesterScore >= 90) {
+                resultValue.className = 'result-value success';
+            } else if (semesterScore >= 60) {
+                resultValue.className = 'result-value info';
+            } else {
+                resultValue.className = 'result-value warning';
+            }
+            
+            // 計算學年成績
+            calculateYearGrade();
+        });
+        
+        // 計算學年成績
+        function calculateYearGrade() {
+            const semester1Value = resultSemester1.querySelector('.result-value').textContent;
+            const semester2Value = resultSemester2.querySelector('.result-value').textContent;
+            
+            // 檢查兩個學期成績是否都已計算
+            if (semester1Value === '--' || semester2Value === '--') {
+                return;
+            }
+            
+            const semester1Score = parseFloat(semester1Value);
+            const semester2Score = parseFloat(semester2Value);
+            
+            // 計算學年總成績 (兩個學期平均)
+            const yearScore = (semester1Score + semester2Score) / 2;
+            
+            // 顯示結果
+            const resultValue = resultYear.querySelector('.result-value');
+            resultValue.textContent = yearScore.toFixed(2);
+            
+            // 根據成績添加顏色標記
+            if (yearScore >= 90) {
+                resultValue.className = 'result-value success';
+            } else if (yearScore >= 60) {
+                resultValue.className = 'result-value info';
+            } else {
+                resultValue.className = 'result-value warning';
+            }
+        }
+        
+        // 計算下次考試所需分數
+        calcPredictionBtn.addEventListener('click', () => {
+            const targetGrade = parseFloat(document.getElementById('targetGrade').value) || 60;
+            const examsTaken = parseInt(document.getElementById('examsTaken').value);
+            const usualsTaken = parseInt(document.getElementById('usualsTaken').value);
+            
+            // 計算已輸入的分數
+            let totalExams = 0;
+            let totalUsuals = 0;
+            
+            // 根據選擇的學期計算已考分數（這裡假設計算當前學期）
+            // 為了簡化，我們假設用戶正在計算第二學期
+            const examInputs = ['exam2_1', 'exam2_2', 'exam2_3'];
+            const usualInputs = ['usual2_1', 'usual2_2', 'usual2_3'];
+            
+            for (let i = 0; i < examsTaken; i++) {
+                const score = parseFloat(document.getElementById(examInputs[i]).value) || 0;
+                totalExams += score;
+            }
+            
+            for (let i = 0; i < usualsTaken; i++) {
+                const score = parseFloat(document.getElementById(usualInputs[i]).value) || 0;
+                totalUsuals += score;
+            }
+            
+            // 計算目前平均
+            const currentExamAvg = examsTaken > 0 ? totalExams / examsTaken : 0;
+            const currentUsualAvg = usualsTaken > 0 ? totalUsuals / usualsTaken : 0;
+            
+            // 計算還需要多少分才能達到目標
+            // 公式推導：目標分數 = (已考段考平均 * 已考次數/總次數 * 0.72) + (下次段考分數 * 1/總次數 * 0.72) + (平時成績平均 * 0.28)
+            // 因此：下次段考分數 = [目標分數 - (已考段考平均 * 已考次數/總次數 * 0.72) - (平時成績平均 * 0.28)] / (1/總次數 * 0.72)
+            
+            const remainingExams = 3 - examsTaken;
+            
+            if (remainingExams <= 0) {
+                // 所有考試都已考完
+                const resultValue = resultPrediction.querySelector('.result-value');
+                resultValue.textContent = "已無下次考試";
+                resultValue.className = 'result-value info';
+                
+                // 更新圖片區域
+                updatePredictionImage(0, "已無下次考試，學期成績已確定。");
+                return;
+            }
+            
+            // 計算下次考試所需分數
+            const examWeightPerTest = 0.72 / 3; // 每次段考佔比
+            const usualWeight = 0.28;
+            
+            // 已考段考對總成績的貢獻
+            const examContributionSoFar = currentExamAvg * examsTaken * examWeightPerTest;
+            
+            // 平時成績對總成績的貢獻
+            const usualContribution = currentUsualAvg * usualWeight;
+            
+            // 計算下次考試所需分數
+            const requiredScore = (targetGrade - examContributionSoFar - usualContribution) / (remainingExams * examWeightPerTest);
+            
+            // 顯示結果
+            const resultValue = resultPrediction.querySelector('.result-value');
+            
+            if (requiredScore <= 0) {
+                resultValue.textContent = "0分 (已達標)";
+                resultValue.className = 'result-value success';
+            } else if (requiredScore > 100) {
+                resultValue.textContent = "100+分 (需滿分且可能無法達標)";
+                resultValue.className = 'result-value warning';
+            } else {
+                resultValue.textContent = requiredScore.toFixed(2) + "分";
+                
+                // 根據所需分數設置顏色
+                if (requiredScore < 60) {
+                    resultValue.className = 'result-value success';
+                } else if (requiredScore <= 80) {
+                    resultValue.className = 'result-value info';
+                } else {
+                    resultValue.className = 'result-value warning';
+                }
+            }
+            
+            // 更新圖片區域
+            updatePredictionImage(requiredScore, targetGrade);
+        });
+        
+        // 根據預測分數更新圖片區域
+        function updatePredictionImage(requiredScore, targetGrade) {
+            let imageHTML = '';
+            let message = '';
+            
+            if (requiredScore <= 0) {
+                imageHTML = `
+                    <div class="image-placeholder">
+                        <i class="fas fa-trophy" style="color:#27ae60;"></i>
+                        <div>恭喜！您已達到目標分數 ${targetGrade} 分</div>
+                    </div>
+                `;
+                message = "您已達到目標分數，保持下去！";
+            } else if (requiredScore <= 50) {
+                imageHTML = `
+                    <div class="image-placeholder">
+                        <i class="fas fa-thumbs-up" style="color:#2ecc71;"></i>
+                        <div>下次考試只需 ${requiredScore.toFixed(2)} 分即可達標</div>
+                        <div style="margin-top:10px; font-size:0.9rem;">這在可達成的範圍內，加油！</div>
+                    </div>
+                `;
+                message = "您只需較低分數即可達標，專心準備即可輕鬆過關。";
+            } else if (requiredScore <= 60) {
+                imageHTML = `
+                    <div class="image-placeholder">
+                        <i class="fas fa-book" style="color:#3498db;"></i>
+                        <div>下次考試需要 ${requiredScore.toFixed(2)} 分才能達標</div>
+                        <div style="margin-top:10px; font-size:0.9rem;">需要認真準備，但完全可達成</div>
+                    </div>
+                `;
+                message = "您需要認真準備下次考試，但這分數在合理範圍內。";
+            } else if (requiredScore <= 70) {
+                imageHTML = `
+                    <div class="image-placeholder">
+                        <i class="fas fa-graduation-cap" style="color:#f39c12;"></i>
+                        <div>下次考試需要 ${requiredScore.toFixed(2)} 分才能達標</div>
+                        <div style="margin-top:10px; font-size:0.9rem;">需要加倍努力才能達到目標</div>
+                    </div>
+                `;
+                message = "您需要較高的分數才能達標，建議加強弱科複習。";
+            } else if (requiredScore <= 80) {
+                imageHTML = `
+                    <div class="image-placeholder">
+                        <i class="fas fa-running" style="color:#e67e22;"></i>
+                        <div>下次考試需要 ${requiredScore.toFixed(2)} 分才能達標</div>
+                        <div style="margin-top:10px; font-size:0.9rem;">需要非常努力，制定詳細複習計畫</div>
+                    </div>
+                `;
+                message = "您需要很高的分數才能達標，必須制定詳細的複習計畫並嚴格執行。";
+            } else if (requiredScore <= 90) {
+                imageHTML = `
+                    <div class="image-placeholder">
+                        <i class="fas fa-fire" style="color:#e74c3c;"></i>
+                        <div>下次考試需要 ${requiredScore.toFixed(2)} 分才能達標</div>
+                        <div style="margin-top:10px; font-size:0.9rem;">挑戰性高，需要全力以赴</div>
+                    </div>
+                `;
+                message = "這是一個很高的目標分數，您需要全力以赴並考慮尋求額外幫助。";
+            } else if (requiredScore <= 100) {
+                imageHTML = `
+                    <div class="image-placeholder">
+                        <i class="fas fa-bullseye" style="color:#c0392b;"></i>
+                        <div>下次考試需要 ${requiredScore.toFixed(2)} 分才能達標</div>
+                        <div style="margin-top:10px; font-size:0.9rem;">接近滿分，挑戰極限！</div>
+                    </div>
+                `;
+                message = "您需要接近滿分的成績，這將是一個極大的挑戰。";
+            } else {
+                imageHTML = `
+                    <div class="image-placeholder">
+                        <i class="fas fa-exclamation-triangle" style="color:#c0392b;"></i>
+                        <div>即使下次考滿分也無法達標</div>
+                        <div style="margin-top:10px; font-size:0.9rem;">建議調整目標或尋求補救機會</div>
+                    </div>
+                `;
+                message = "即使下次考試獲得滿分也無法達到目標，建議您與老師討論補救方案。";
+            }
+            
+            predictionImage.innerHTML = imageHTML;
+            predictionInfo.innerHTML = `<p><strong>提示：</strong> ${message}</p>`;
+        }
+        
+        // 重設功能
+        resetSemester1Btn.addEventListener('click', () => {
+            document.querySelectorAll('#semester1 input').forEach(input => input.value = '');
+            resultSemester1.querySelector('.result-value').textContent = '--';
+            resultSemester1.querySelector('.result-value').className = 'result-value';
+        });
+        
+        resetSemester2Btn.addEventListener('click', () => {
+            document.querySelectorAll('#semester2 input').forEach(input => input.value = '');
+            resultSemester2.querySelector('.result-value').textContent = '--';
+            resultSemester2.querySelector('.result-value').className = 'result-value';
+        });
+        
+        resetAllBtn.addEventListener('click', () => {
+            document.querySelectorAll('input').forEach(input => {
+                if (input.id !== 'targetGrade') {
+                    input.value = '';
+                }
+            });
+            
+            document.getElementById('targetGrade').value = '60';
+            document.getElementById('examsTaken').value = '2';
+            document.getElementById('usualsTaken').value = '2';
+            
+            // 重設所有結果顯示
+            const resultValues = document.querySelectorAll('.result-value');
+            resultValues.forEach(el => {
+                el.textContent = '--';
+                el.className = 'result-value';
+            });
+            
+            // 重設圖片區域
+            predictionImage.innerHTML = `
+                <div class="image-placeholder">
+                    <i class="fas fa-image"></i>
+                    <div>根據下次所需分數顯示對應圖片</div>
+                </div>
+            `;
+            
+            predictionInfo.innerHTML = `
+                <p>此處將根據您下次段考所需分數顯示提示訊息。</p>
+                <p>圖片區域預留給您根據不同分數範圍自訂圖片顯示：</p>
+                <ul style="margin-top: 10px; padding-left: 20px;">
+                    <li>10-50分：您可放置鼓勵學習的圖片</li>
+                    <li>50-60分：您可放置進步空間的圖片</li>
+                    <li>60-70分：您可放置達標的圖片</li>
+                    <li>70-80分：您可放置良好的圖片</li>
+                    <li>80-90分：您可放置優秀的圖片</li>
+                    <li>90-100分：您可放置卓越的圖片</li>
+                    <li>100分以上：您可放置挑戰極限的圖片</li>
+                </ul>
+            `;
+        });
+        
+        // 頁面加載時初始化
+        document.addEventListener('DOMContentLoaded', () => {
+            // 為輸入框添加示例值以便測試
+            const exampleValues = {
+                'exam1_1': 85, 'exam1_2': 78, 'exam1_3': 0,
+                'usual1_1': 90, 'usual1_2': 88, 'usual1_3': 0,
+                'exam2_1': 82, 'exam2_2': 75, 'exam2_3': 0,
+                'usual2_1': 85, 'usual2_2': 80, 'usual2_3': 0
+            };
+            
+            // 填充示例值（僅在本地測試時使用）
+            for (const [id, value] of Object.entries(exampleValues)) {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.value = value;
+                }
+            }
+        });
+    </script>
 </body>
 </html>
