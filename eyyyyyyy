@@ -1,0 +1,303 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>學期/學年成績計算機</title>
+  <style>
+    :root{--card-bg:#fff;--bg:#f4f6fb;--accent:#3b82f6}
+    html,body{height:100%;margin:0;font-family:system-ui,-apple-system,'Segoe UI',Roboto,'Noto Sans CJK TC',"Helvetica Neue",Arial}
+    body{background:linear-gradient(180deg,#eef2ff 0%,var(--bg) 100%);padding:24px}
+    .wrap{max-width:920px;margin:0 auto}
+    header{display:flex;gap:12px;align-items:center;margin-bottom:18px}
+    header h1{margin:0;font-size:20px}
+    .card{background:var(--card-bg);border-radius:12px;padding:18px;box-shadow:0 6px 18px rgba(20,20,60,.06);margin-bottom:12px}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+    label{display:block;font-size:13px;margin-bottom:6px}
+    input[type=number],select{width:100%;padding:8px 10px;border-radius:8px;border:1px solid #e6e9f2;font-size:14px}
+    .row{display:flex;gap:8px}
+    button{background:var(--accent);color:#fff;border:0;padding:10px 14px;border-radius:10px;font-weight:600;cursor:pointer}
+    .muted{color:#6b7280;font-size:13px}
+    .result{font-size:18px;font-weight:700}
+    .small{font-size:13px}
+    .img-preview{max-width:240px;height:auto;border-radius:8px;border:1px dashed #d1d5db;padding:6px;background:#fff}
+    .footer{font-size:13px;color:#374151;margin-top:12px}
+    @media(max-width:520px){header{flex-direction:column;align-items:flex-start}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>學期 / 學年 成績小工具（可直接放到 GitHub Pages）</h1>
+      <div class="muted">輸入分數（0-100），按計算。</div>
+    </header>
+
+    <section class="card">
+      <div class="grid">
+        <div>
+          <label>段考 1 分數</label>
+          <input id="exam1" type="number" min="0" max="100" placeholder="留空可視為還沒考（以計算需要分數）" />
+        </div>
+        <div>
+          <label>段考 2 分數</label>
+          <input id="exam2" type="number" min="0" max="100" placeholder="留空可視為還沒考（以計算需要分數）" />
+        </div>
+        <div>
+          <label>段考 3 分數</label>
+          <input id="exam3" type="number" min="0" max="100" placeholder="留空可視為還沒考（以計算需要分數）" />
+        </div>
+      </div>
+      <hr style="margin:12px 0;border:none;border-top:1px dashed #e6e9f2">
+      <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+        <label style="min-width:160px">平時成績模式</label>
+        <select id="dailyMode">
+          <option value="3">3 次平時（平均）</option>
+          <option value="1">1 次平時（單一分數）</option>
+        </select>
+        <div style="flex:1"></div>
+        <label class="small muted">段考 : 平時 = 72 : 28（硬性設定，可在程式中修改）</label>
+      </div>
+
+      <div id="dailyInputs" class="grid" style="margin-top:12px">
+        <div><label>平時 1</label><input id="daily1" type="number" min="0" max="100"></div>
+        <div><label>平時 2</label><input id="daily2" type="number" min="0" max="100"></div>
+        <div><label>平時 3</label><input id="daily3" type="number" min="0" max="100"></div>
+      </div>
+
+      <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap">
+        <button id="calcSemester">計算本學期總成績</button>
+        <button id="calcYear">計算學年總成績（需輸入兩學期總成績）</button>
+        <div style="flex:1"></div>
+        <label class="small">通過分數（預設）</label>
+        <input id="passThreshold" type="number" value="60" min="0" max="100" style="width:80px">
+      </div>
+
+      <div style="margin-top:12px" id="semesterResultArea"></div>
+    </section>
+
+    <section class="card">
+      <h3 style="margin-top:0">預測：下次段考需考多少才不被當（解方程式）</h3>
+      <div class="grid">
+        <div>
+          <label>選擇下一次段考（假設該次為未知 x）</label>
+          <select id="nextExamChoice">
+            <option value="1">段考 1</option>
+            <option value="2">段考 2</option>
+            <option value="3">段考 3</option>
+          </select>
+        </div>
+        <div>
+          <label>目標學期總成績（通常為通過分數）</label>
+          <input id="targetSemester" type="number" value="60" min="0" max="100">
+        </div>
+        <div>
+          <label>（選用）目前另一學期總成績以計算學年成績</label>
+          <input id="otherSemester" type="number" min="0" max="100" placeholder="輸入學期1或學期2的另一個總成績，可空白">
+        </div>
+      </div>
+      <div style="margin-top:12px;display:flex;gap:8px;align-items:center">
+        <button id="calcNeeded">計算需要分數 x</button>
+        <div style="flex:1"></div>
+        <div class="muted small">結果會顯示需要的分數，若&gt;100表示理論上無法達成。</div>
+      </div>
+
+      <div id="neededResult" style="margin-top:12px"></div>
+
+      <hr style="margin:12px 0;border:none;border-top:1px dashed #e6e9f2">
+      <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+        <div>
+          <label>提示影像（依分數區間變換）</label>
+          <div>
+            <!-- 預設佔位圖，使用者可放 images/10-50.png 等檔名覆蓋 -->
+            <img id="rangeImage" src="images/placeholder-10-50.png" alt="請替換此圖檔（10-50）" class="img-preview">
+          </div>
+        </div>
+        <div style="flex:1">
+          <label>提示文字（可自行修改）</label>
+          <div id="rangeText" class="card" style="padding:12px">尚未計算</div>
+        </div>
+      </div>
+
+      <div class="footer">範例：當需要分數落在 10-50、50-60、60-70、70-80、80-90、90-100、>100 等區間時，程式會切換上方圖片及文字。你可以到 images/ 資料夾放入對應檔名：<br>
+        <code>10-50.png,50-60.png,60-70.png,70-80.png,80-90.png,90-100.png,100-plus.png</code>
+      </div>
+    </section>
+
+    <section class="card">
+      <h3 style="margin-top:0">其他說明 & 部署到 GitHub Pages</h3>
+      <ol>
+        <li>把這個檔案命名為 <code>index.html</code>，放到新的 GitHub repository 的 root。</li>
+        <li>建立一個 <code>images/</code> 資料夾，上傳你的提示圖片，檔名請參考上方。</li>
+        <li>到 GitHub repository 的 Settings → Pages，選擇主分支 (main) 根目錄作為 Pages，儲存即可公開。</li>
+      </ol>
+      <div class="muted small">（如果你需要，我可以幫你把程式碼調整為單一檔案或分離 css/js 檔）</div>
+    </section>
+  </div>
+
+  <script>
+    // 權重常數（如需改動可在此調整）
+    const EXAM_WEIGHT = 0.72;
+    const DAILY_WEIGHT = 0.28;
+
+    function getNumber(id){
+      const v = document.getElementById(id).value.trim();
+      if(v === "") return null;
+      const n = Number(v);
+      return Number.isFinite(n) ? n : null;
+    }
+
+    function avg(arr){
+      const vals = arr.filter(v => v !== null && !Number.isNaN(v));
+      if(vals.length === 0) return 0;
+      return vals.reduce((a,b)=>a+b,0)/vals.length;
+    }
+
+    function formatNum(n){
+      return (Math.round(n*100)/100).toFixed(2);
+    }
+
+    // 更新平時輸入欄位（1 or 3）
+    document.getElementById('dailyMode').addEventListener('change', ()=>{
+      const mode = document.getElementById('dailyMode').value;
+      const container = document.getElementById('dailyInputs');
+      if(mode === '1'){
+        container.innerHTML = '<div><label>平時（單一分數）</label><input id="daily1" type="number" min="0" max="100"></div>';
+      } else {
+        container.innerHTML = '<div><label>平時 1</label><input id="daily1" type="number" min="0" max="100"></div>\n        <div><label>平時 2</label><input id="daily2" type="number" min="0" max="100"></div>\n        <div><label>平時 3</label><input id="daily3" type="number" min="0" max="100"></div>';
+      }
+    });
+
+    document.getElementById('calcSemester').addEventListener('click', ()=>{
+      const e1 = getNumber('exam1');
+      const e2 = getNumber('exam2');
+      const e3 = getNumber('exam3');
+      const dailyMode = document.getElementById('dailyMode').value;
+      const d1 = getNumber('daily1');
+      const d2 = dailyMode==='3'?getNumber('daily2'):null;
+      const d3 = dailyMode==='3'?getNumber('daily3'):null;
+      const pass = Number(document.getElementById('passThreshold').value) || 60;
+
+      const examVals = [e1,e2,e3];
+      // 若有空值，視為尚未考，這裡計算時會以現有考試的平均代入（但更準確的做法是看哪一次是未知）
+      const averageExams = avg(examVals.filter(v=>v!==null));
+      const averageDaily = (dailyMode==='1')? (d1||0) : avg([d1,d2,d3]);
+
+      // 如果全部三次段考都有分數，則正常計算；若有空則以現有的平均當作近似值（僅顯示提示）
+      const semesterScore = EXAM_WEIGHT * (averageExams||0) + DAILY_WEIGHT * (averageDaily||0);
+
+      const area = document.getElementById('semesterResultArea');
+      area.innerHTML = `<div class="result">本學期總成績：${formatNum(semesterScore)} / 100</div>
+        <div class="muted small">（段考平均：${formatNum(averageExams)}，平時平均：${formatNum(averageDaily)}）</div>
+        <div style="margin-top:8px">通過門檻：${pass}。${semesterScore>=pass?'<strong style="color:green">已達標</strong>':'<strong style="color:#d65555">尚未達標</strong>'}</div>`;
+    });
+
+    document.getElementById('calcYear').addEventListener('click', ()=>{
+      // 讓使用者輸入兩個學期總成績中的另一個來計算
+      const semA = getNumber('otherSemester');
+      const semB = getNumber('semesterManual');
+      // 但為簡單起見，我們提示使用者可直接用兩次學期成績的平均
+      const s1 = getNumber('otherSemester');
+      // 另一個學期可先用上方計算結果（檢視 semesterResultArea 的值）
+      const msg = '要計算學年總成績，請先分別計算兩學期的總成績（或在此輸入另一學期總成績），然後取平均。\n要我幫你設自動帶入上一段的學期計算結果請告訴我。';
+      alert(msg);
+    });
+
+    document.getElementById('calcNeeded').addEventListener('click', ()=>{
+      const choice = Number(document.getElementById('nextExamChoice').value);
+      const e1 = getNumber('exam1');
+      const e2 = getNumber('exam2');
+      const e3 = getNumber('exam3');
+      const examVals = [e1,e2,e3];
+      const examVals = [e1,e2,e3];
+      const knownVals = examVals.filter((v,i)=> i+1!==choice && v!==null);
+      const knownSum = knownVals.reduce((a,b)=>a+b,0);
+      const knownCount = knownVals.length;
+
+      const dailyMode = document.getElementById('dailyMode').value;
+      const d1 = getNumber('daily1');
+      const d2 = dailyMode==='3'?getNumber('daily2'):null;
+      const d3 = dailyMode==='3'?getNumber('daily3'):null;
+      const averageDaily = (dailyMode==='1')? (d1||0) : avg([d1,d2,d3]);
+
+      const target = Number(document.getElementById('targetSemester').value) || Number(document.getElementById('passThreshold').value) || 60;
+
+      // 解 x： 0.72 * ((knownSum + x) / (knownCount + 1)) + 0.28 * avgDaily >= target
+      const rhs = (target - DAILY_WEIGHT * averageDaily) / EXAM_WEIGHT;
+      let xNeeded = rhs * (knownCount + 1) - knownSum;
+      xNeeded = Math.round(xNeeded*100)/100;
+
+      const out = document.getElementById('neededResult');
+      let note = ''; = examVals.some((v,i)=> i+1!==choice && v===null);
+      if(otherMissing) note = '<div class="muted small">注意：其他段考有空白欄位，計算時以 0 代入，建議先補全再計算或手動將空白視為預估分數。</div>';
+
+      if(xNeeded <= 0){
+        out.innerHTML = `<div class=\"result\" style=\"color:green\">不需要再高分：${xNeeded}（已達到目標，建議保持現狀）</div>${note}`;
+      } else {
+        out.innerHTML = `<div class=\"result\">下次段考需要：${xNeeded} / 100</div>${note}`;
+      }
+
+      // 根據區間換圖與換字
+      updateRangeVisual(xNeeded);
+
+      // 若使用者有輸入另一個學期的分數，顯示學年預估
+      const otherSem = getNumber('otherSemester');
+      if(otherSem !== null){
+        const thisSemApprox = EXAM_WEIGHT * ((knownSum + Math.max(0,Math.min(100,xNeeded))) / (knownCount + 1)) + DAILY_WEIGHT * averageDaily;
+        const yearAvg = (thisSemApprox + otherSem) / 2;
+        out.innerHTML += `<div style=\"margin-top:8px\" class=\"small\">若以此推估，學年平均約：${formatNum(yearAvg)}</div>`;
+      }
+    });
+        out.innerHTML = `<div class="result">下次段考需要：${xNeeded} / 100</div>${note}`;
+      }
+
+      // 根據區間換圖與換字
+      updateRangeVisual(xNeeded);
+
+      // 若使用者有輸入另一個學期的分數，顯示學年預估
+      const otherSem = getNumber('otherSemester');
+      if(otherSem !== null){
+        const thisSemApprox = EXAM_WEIGHT * ((knownSum + Math.max(0,Math.min(100,xNeeded)))/3) + DAILY_WEIGHT * averageDaily;
+        const yearAvg = (thisSemApprox + otherSem) / 2;
+        out.innerHTML += `<div style="margin-top:8px" class="small">若以此推估，學年平均約：${formatNum(yearAvg)}</div>`;
+      }
+    });
+
+    function updateRangeVisual(x){
+      const img = document.getElementById('rangeImage');
+      const text = document.getElementById('rangeText');
+      if(x === null || isNaN(x)){
+        text.textContent = '尚未計算';
+        img.src = 'images/placeholder-10-50.png';
+        return;
+      }
+      const val = x;
+      // 區間對應（使用者可自行替換圖片檔名）
+      if(val < 50){
+        img.src = 'images/10-50.png';
+        text.innerHTML = '<strong>區間：10-50</strong><br>提示文字（請自行修改）';
+      } else if(val < 60){
+        img.src = 'images/50-60.png';
+        text.innerHTML = '<strong>區間：50-60</strong><br>提示文字（請自行修改）';
+      } else if(val < 70){
+        img.src = 'images/60-70.png';
+        text.innerHTML = '<strong>區間：60-70</strong><br>提示文字（請自行修改）';
+      } else if(val < 80){
+        img.src = 'images/70-80.png';
+        text.innerHTML = '<strong>區間：70-80</strong><br>提示文字（請自行修改）';
+      } else if(val < 90){
+        img.src = 'images/80-90.png';
+        text.innerHTML = '<strong>區間：80-90</strong><br>提示文字（請自行修改）';
+      } else if(val <= 100){
+        img.src = 'images/90-100.png';
+        text.innerHTML = '<strong>區間：90-100</strong><br>提示文字（請自行修改）';
+      } else {
+        img.src = 'images/100-plus.png';
+        text.innerHTML = '<strong>區間：100 以上</strong><br>提示文字（請自行修改）';
+      }
+    }
+
+    // 初始化
+    updateRangeVisual(null);
+  </script>
+</body>
+</html>
