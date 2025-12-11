@@ -99,7 +99,7 @@
             min-width: 120px;
         }
         
-        input {
+        input, select {
             flex: 2;
             padding: 12px 15px;
             border: 2px solid #ddd;
@@ -109,7 +109,7 @@
             min-width: 150px;
         }
         
-        input:focus {
+        input:focus, select:focus {
             border-color: #4b6cb7;
             outline: none;
             box-shadow: 0 0 0 3px rgba(75, 108, 183, 0.2);
@@ -243,6 +243,39 @@
             margin-top: 5px;
         }
         
+        .semester-selector {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .semester-option {
+            flex: 1;
+            min-width: 140px;
+        }
+        
+        .semester-option input[type="radio"] {
+            display: none;
+        }
+        
+        .semester-option label {
+            display: block;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .semester-option input[type="radio"]:checked + label {
+            background-color: #4b6cb7;
+            color: white;
+            border-color: #4b6cb7;
+        }
+        
         .footer {
             text-align: center;
             margin-top: 40px;
@@ -270,7 +303,7 @@
                 margin-bottom: 5px;
             }
             
-            input {
+            input, select {
                 width: 100%;
             }
             
@@ -279,6 +312,10 @@
             }
             
             button {
+                width: 100%;
+            }
+            
+            .semester-option {
                 width: 100%;
             }
         }
@@ -298,32 +335,32 @@
             <div class="input-group">
                 <div class="input-row">
                     <label for="exam1_1">第一次段考分數：</label>
-                    <input type="number" id="exam1_1" min="0" max="100" placeholder="0-100">
+                    <input type="number" id="exam1_1" min="0" max="100" placeholder="輸入0-100">
                 </div>
                 
                 <div class="input-row">
                     <label for="exam1_2">第二次段考分數：</label>
-                    <input type="number" id="exam1_2" min="0" max="100" placeholder="0-100">
+                    <input type="number" id="exam1_2" min="0" max="100" placeholder="輸入0-100">
                 </div>
                 
                 <div class="input-row">
                     <label for="exam1_3">第三次段考分數：</label>
-                    <input type="number" id="exam1_3" min="0" max="100" placeholder="0-100">
+                    <input type="number" id="exam1_3" min="0" max="100" placeholder="輸入0-100">
                 </div>
                 
                 <div class="input-row">
                     <label for="usual1_1">第一次平時成績：</label>
-                    <input type="number" id="usual1_1" min="0" max="100" placeholder="0-100">
+                    <input type="number" id="usual1_1" min="0" max="100" placeholder="輸入0-100">
                 </div>
                 
                 <div class="input-row">
                     <label for="usual1_2">第二次平時成績：</label>
-                    <input type="number" id="usual1_2" min="0" max="100" placeholder="0-100">
+                    <input type="number" id="usual1_2" min="0" max="100" placeholder="輸入0-100">
                 </div>
                 
                 <div class="input-row">
                     <label for="usual1_3">第三次平時成績：</label>
-                    <input type="number" id="usual1_3" min="0" max="100" placeholder="0-100">
+                    <input type="number" id="usual1_3" min="0" max="100" placeholder="輸入0-100">
                 </div>
             </div>
             
@@ -350,32 +387,32 @@
             <div class="input-group">
                 <div class="input-row">
                     <label for="exam2_1">第一次段考分數：</label>
-                    <input type="number" id="exam2_1" min="0" max="100" placeholder="0-100">
+                    <input type="number" id="exam2_1" min="0" max="100" placeholder="輸入0-100">
                 </div>
                 
                 <div class="input-row">
                     <label for="exam2_2">第二次段考分數：</label>
-                    <input type="number" id="exam2_2" min="0" max="100" placeholder="0-100">
+                    <input type="number" id="exam2_2" min="0" max="100" placeholder="輸入0-100">
                 </div>
                 
                 <div class="input-row">
                     <label for="exam2_3">第三次段考分數：</label>
-                    <input type="number" id="exam2_3" min="0" max="100" placeholder="0-100">
+                    <input type="number" id="exam2_3" min="0" max="100" placeholder="輸入0-100">
                 </div>
                 
                 <div class="input-row">
                     <label for="usual2_1">第一次平時成績：</label>
-                    <input type="number" id="usual2_1" min="0" max="100" placeholder="0-100">
+                    <input type="number" id="usual2_1" min="0" max="100" placeholder="輸入0-100">
                 </div>
                 
                 <div class="input-row">
                     <label for="usual2_2">第二次平時成績：</label>
-                    <input type="number" id="usual2_2" min="0" max="100" placeholder="0-100">
+                    <input type="number" id="usual2_2" min="0" max="100" placeholder="輸入0-100">
                 </div>
                 
                 <div class="input-row">
                     <label for="usual2_3">第三次平時成績：</label>
-                    <input type="number" id="usual2_3" min="0" max="100" placeholder="0-100">
+                    <input type="number" id="usual2_3" min="0" max="100" placeholder="輸入0-100">
                 </div>
             </div>
             
@@ -400,6 +437,18 @@
             <h2 class="card-title"><i class="fas fa-chart-line"></i> 學年成績與下次考試預測</h2>
             
             <div class="input-group">
+                <!-- 選擇要預測哪個學期 -->
+                <div class="semester-selector">
+                    <div class="semester-option">
+                        <input type="radio" id="predictSemester1" name="predictSemester" value="1" checked>
+                        <label for="predictSemester1">預測第一學期</label>
+                    </div>
+                    <div class="semester-option">
+                        <input type="radio" id="predictSemester2" name="predictSemester" value="2">
+                        <label for="predictSemester2">預測第二學期</label>
+                    </div>
+                </div>
+                
                 <div class="input-row">
                     <label for="targetGrade">學期目標分數：</label>
                     <input type="number" id="targetGrade" min="0" max="100" value="60" placeholder="例如：60">
@@ -407,23 +456,28 @@
                 
                 <div class="hint">輸入您希望達到的最低學期分數（通常為60分）</div>
                 
-                <div class="input-row">
-                    <label for="examsTaken">已考段考次數：</label>
-                    <select id="examsTaken" style="flex: 2; padding: 12px 15px; border-radius: 8px; border: 2px solid #ddd;">
-                        <option value="1">1次</option>
-                        <option value="2" selected>2次</option>
-                        <option value="3">3次</option>
-                    </select>
+                <!-- 下次考試預測的專用輸入區 -->
+                <div id="predictionInputs">
+                    <div class="input-row">
+                        <label for="nextExamNumber">預測第幾次段考：</label>
+                        <select id="nextExamNumber">
+                            <option value="1">第一次段考</option>
+                            <option value="2">第二次段考</option>
+                            <option value="3" selected>第三次段考</option>
+                        </select>
+                    </div>
+                    
+                    <div class="input-row">
+                        <label for="nextUsualNumber">預測第幾次平時：</label>
+                        <select id="nextUsualNumber">
+                            <option value="1">第一次平時</option>
+                            <option value="2">第二次平時</option>
+                            <option value="3" selected>第三次平時</option>
+                        </select>
+                    </div>
                 </div>
                 
-                <div class="input-row">
-                    <label for="usualsTaken">已有平時成績次數：</label>
-                    <select id="usualsTaken" style="flex: 2; padding: 12px 15px; border-radius: 8px; border: 2px solid #ddd;">
-                        <option value="1">1次</option>
-                        <option value="2" selected>2次</option>
-                        <option value="3">3次</option>
-                    </select>
-                </div>
+                <div class="hint">選擇您要預測的考試與平時成績次數</div>
             </div>
             
             <div class="buttons">
@@ -503,24 +557,14 @@
             const usual3 = parseFloat(document.getElementById('usual1_3').value) || 0;
             
             // 計算段考平均和平時平均
-            const examAvg = (exam1 + exam2 + exam3) / 3;
-            const usualAvg = (usual1 + usual2 + usual3) / 3;
+            const examAvg = calculateAverage([exam1, exam2, exam3]);
+            const usualAvg = calculateAverage([usual1, usual2, usual3]);
             
             // 計算學期總成績 (段考72% + 平時28%)
             const semesterScore = (examAvg * 0.72) + (usualAvg * 0.28);
             
             // 顯示結果
-            const resultValue = resultSemester1.querySelector('.result-value');
-            resultValue.textContent = semesterScore.toFixed(2);
-            
-            // 根據成績添加顏色標記
-            if (semesterScore >= 90) {
-                resultValue.className = 'result-value success';
-            } else if (semesterScore >= 60) {
-                resultValue.className = 'result-value info';
-            } else {
-                resultValue.className = 'result-value warning';
-            }
+            updateResult(resultSemester1, semesterScore);
             
             // 計算學年成績
             calculateYearGrade();
@@ -537,28 +581,40 @@
             const usual3 = parseFloat(document.getElementById('usual2_3').value) || 0;
             
             // 計算段考平均和平時平均
-            const examAvg = (exam1 + exam2 + exam3) / 3;
-            const usualAvg = (usual1 + usual2 + usual3) / 3;
+            const examAvg = calculateAverage([exam1, exam2, exam3]);
+            const usualAvg = calculateAverage([usual1, usual2, usual3]);
             
             // 計算學期總成績 (段考72% + 平時28%)
             const semesterScore = (examAvg * 0.72) + (usualAvg * 0.28);
             
             // 顯示結果
-            const resultValue = resultSemester2.querySelector('.result-value');
-            resultValue.textContent = semesterScore.toFixed(2);
-            
-            // 根據成績添加顏色標記
-            if (semesterScore >= 90) {
-                resultValue.className = 'result-value success';
-            } else if (semesterScore >= 60) {
-                resultValue.className = 'result-value info';
-            } else {
-                resultValue.className = 'result-value warning';
-            }
+            updateResult(resultSemester2, semesterScore);
             
             // 計算學年成績
             calculateYearGrade();
         });
+        
+        // 計算平均值的輔助函數
+        function calculateAverage(scores) {
+            const validScores = scores.filter(score => score > 0);
+            if (validScores.length === 0) return 0;
+            return validScores.reduce((sum, score) => sum + score, 0) / validScores.length;
+        }
+        
+        // 更新結果顯示的輔助函數
+        function updateResult(resultElement, score) {
+            const resultValue = resultElement.querySelector('.result-value');
+            resultValue.textContent = score.toFixed(2);
+            
+            // 根據成績添加顏色標記
+            if (score >= 90) {
+                resultValue.className = 'result-value success';
+            } else if (score >= 60) {
+                resultValue.className = 'result-value info';
+            } else {
+                resultValue.className = 'result-value warning';
+            }
+        }
         
         // 計算學年成績
         function calculateYearGrade() {
@@ -577,55 +633,89 @@
             const yearScore = (semester1Score + semester2Score) / 2;
             
             // 顯示結果
-            const resultValue = resultYear.querySelector('.result-value');
-            resultValue.textContent = yearScore.toFixed(2);
-            
-            // 根據成績添加顏色標記
-            if (yearScore >= 90) {
-                resultValue.className = 'result-value success';
-            } else if (yearScore >= 60) {
-                resultValue.className = 'result-value info';
-            } else {
-                resultValue.className = 'result-value warning';
-            }
+            updateResult(resultYear, yearScore);
         }
         
         // 計算下次考試所需分數
         calcPredictionBtn.addEventListener('click', () => {
             const targetGrade = parseFloat(document.getElementById('targetGrade').value) || 60;
-            const examsTaken = parseInt(document.getElementById('examsTaken').value);
-            const usualsTaken = parseInt(document.getElementById('usualsTaken').value);
+            const nextExamNum = parseInt(document.getElementById('nextExamNumber').value);
+            const nextUsualNum = parseInt(document.getElementById('nextUsualNumber').value);
             
-            // 計算已輸入的分數
-            let totalExams = 0;
-            let totalUsuals = 0;
+            // 獲取選擇的學期
+            const selectedSemester = document.querySelector('input[name="predictSemester"]:checked').value;
             
-            // 根據選擇的學期計算已考分數（這裡假設計算當前學期）
-            // 為了簡化，我們假設用戶正在計算第二學期
-            const examInputs = ['exam2_1', 'exam2_2', 'exam2_3'];
-            const usualInputs = ['usual2_1', 'usual2_2', 'usual2_3'];
+            // 根據選擇的學期獲取對應的輸入元素
+            let examInputs, usualInputs, semesterPrefix;
             
-            for (let i = 0; i < examsTaken; i++) {
+            if (selectedSemester === "1") {
+                semesterPrefix = "1";
+                examInputs = ['exam1_1', 'exam1_2', 'exam1_3'];
+                usualInputs = ['usual1_1', 'usual1_2', 'usual1_3'];
+            } else {
+                semesterPrefix = "2";
+                examInputs = ['exam2_1', 'exam2_2', 'exam2_3'];
+                usualInputs = ['usual2_1', 'usual2_2', 'usual2_3'];
+            }
+            
+            // 獲取已輸入的成績
+            const enteredExams = [];
+            const enteredUsuals = [];
+            
+            for (let i = 0; i < nextExamNum - 1; i++) {
                 const score = parseFloat(document.getElementById(examInputs[i]).value) || 0;
-                totalExams += score;
+                enteredExams.push(score);
             }
             
-            for (let i = 0; i < usualsTaken; i++) {
+            for (let i = 0; i < nextUsualNum - 1; i++) {
                 const score = parseFloat(document.getElementById(usualInputs[i]).value) || 0;
-                totalUsuals += score;
+                enteredUsuals.push(score);
             }
             
-            // 計算目前平均
-            const currentExamAvg = examsTaken > 0 ? totalExams / examsTaken : 0;
-            const currentUsualAvg = usualsTaken > 0 ? totalUsuals / usualsTaken : 0;
+            // 檢查是否有輸入成績
+            if (enteredExams.length === 0 && enteredUsuals.length === 0) {
+                alert("請先輸入已考試的成績！");
+                return;
+            }
             
-            // 計算還需要多少分才能達到目標
-            // 公式推導：目標分數 = (已考段考平均 * 已考次數/總次數 * 0.72) + (下次段考分數 * 1/總次數 * 0.72) + (平時成績平均 * 0.28)
-            // 因此：下次段考分數 = [目標分數 - (已考段考平均 * 已考次數/總次數 * 0.72) - (平時成績平均 * 0.28)] / (1/總次數 * 0.72)
+            // 計算已考成績的平均
+            const currentExamAvg = enteredExams.length > 0 ? 
+                enteredExams.reduce((sum, score) => sum + score, 0) / enteredExams.length : 0;
+                
+            const currentUsualAvg = enteredUsuals.length > 0 ? 
+                enteredUsuals.reduce((sum, score) => sum + score, 0) / enteredUsuals.length : 0;
             
-            const remainingExams = 3 - examsTaken;
+            // 計算還需要多少次考試和平時成績
+            const totalExams = 3;
+            const totalUsuals = 3;
             
-            if (remainingExams <= 0) {
+            const remainingExams = totalExams - enteredExams.length;
+            const remainingUsuals = totalUsuals - enteredUsuals.length;
+            
+            // 計算下次考試所需分數
+            // 公式：目標分數 = (已考段考平均 * 已考次數/總次數 * 0.72) + (下次段考分數 * 1/總次數 * 0.72) + 
+            //        (已考平時平均 * 已考次數/總次數 * 0.28) + (下次平時分數 * 1/總次數 * 0.28)
+            
+            // 為了簡化，我們假設下次平時成績與目前平均相同
+            // 計算下次段考所需分數
+            const examWeightPerTest = 0.72 / totalExams;
+            const usualWeightPerTest = 0.28 / totalUsuals;
+            
+            // 已考段考對總成績的貢獻
+            const examContributionSoFar = currentExamAvg * enteredExams.length * examWeightPerTest;
+            
+            // 已考平時對總成績的貢獻
+            const usualContributionSoFar = currentUsualAvg * enteredUsuals.length * usualWeightPerTest;
+            
+            // 假設下次平時成績與目前平均相同，計算其貢獻
+            const nextUsualContribution = currentUsualAvg * usualWeightPerTest;
+            
+            // 計算下次段考所需分數
+            let requiredScore;
+            if (remainingExams > 0) {
+                requiredScore = (targetGrade - examContributionSoFar - usualContributionSoFar - 
+                               (nextUsualContribution * remainingUsuals)) / (remainingExams * examWeightPerTest);
+            } else {
                 // 所有考試都已考完
                 const resultValue = resultPrediction.querySelector('.result-value');
                 resultValue.textContent = "已無下次考試";
@@ -635,19 +725,6 @@
                 updatePredictionImage(0, "已無下次考試，學期成績已確定。");
                 return;
             }
-            
-            // 計算下次考試所需分數
-            const examWeightPerTest = 0.72 / 3; // 每次段考佔比
-            const usualWeight = 0.28;
-            
-            // 已考段考對總成績的貢獻
-            const examContributionSoFar = currentExamAvg * examsTaken * examWeightPerTest;
-            
-            // 平時成績對總成績的貢獻
-            const usualContribution = currentUsualAvg * usualWeight;
-            
-            // 計算下次考試所需分數
-            const requiredScore = (targetGrade - examContributionSoFar - usualContribution) / (remainingExams * examWeightPerTest);
             
             // 顯示結果
             const resultValue = resultPrediction.querySelector('.result-value');
@@ -771,15 +848,18 @@
         });
         
         resetAllBtn.addEventListener('click', () => {
-            document.querySelectorAll('input').forEach(input => {
+            // 清空所有輸入框
+            document.querySelectorAll('input[type="number"]').forEach(input => {
                 if (input.id !== 'targetGrade') {
                     input.value = '';
                 }
             });
             
+            // 重設選擇框
             document.getElementById('targetGrade').value = '60';
-            document.getElementById('examsTaken').value = '2';
-            document.getElementById('usualsTaken').value = '2';
+            document.getElementById('nextExamNumber').value = '3';
+            document.getElementById('nextUsualNumber').value = '3';
+            document.getElementById('predictSemester1').checked = true;
             
             // 重設所有結果顯示
             const resultValues = document.querySelectorAll('.result-value');
@@ -799,36 +879,3 @@
             predictionInfo.innerHTML = `
                 <p>此處將根據您下次段考所需分數顯示提示訊息。</p>
                 <p>圖片區域預留給您根據不同分數範圍自訂圖片顯示：</p>
-                <ul style="margin-top: 10px; padding-left: 20px;">
-                    <li>10-50分：您可放置鼓勵學習的圖片</li>
-                    <li>50-60分：您可放置進步空間的圖片</li>
-                    <li>60-70分：您可放置達標的圖片</li>
-                    <li>70-80分：您可放置良好的圖片</li>
-                    <li>80-90分：您可放置優秀的圖片</li>
-                    <li>90-100分：您可放置卓越的圖片</li>
-                    <li>100分以上：您可放置挑戰極限的圖片</li>
-                </ul>
-            `;
-        });
-        
-        // 頁面加載時初始化
-        document.addEventListener('DOMContentLoaded', () => {
-            // 為輸入框添加示例值以便測試
-            const exampleValues = {
-                'exam1_1': 85, 'exam1_2': 78, 'exam1_3': 0,
-                'usual1_1': 90, 'usual1_2': 88, 'usual1_3': 0,
-                'exam2_1': 82, 'exam2_2': 75, 'exam2_3': 0,
-                'usual2_1': 85, 'usual2_2': 80, 'usual2_3': 0
-            };
-            
-            // 填充示例值（僅在本地測試時使用）
-            for (const [id, value] of Object.entries(exampleValues)) {
-                const element = document.getElementById(id);
-                if (element) {
-                    element.value = value;
-                }
-            }
-        });
-    </script>
-</body>
-</html>
